@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IdFortress.Application\IdFortress.Application.csproj" />
     <ProjectReference Include="..\IdFortress.Domain\IdFortress.Domain.csproj" />
   </ItemGroup>
 
