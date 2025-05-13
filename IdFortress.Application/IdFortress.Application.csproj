@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IdFortress.Communication\IdFortress.Communication.csproj" />
     <ProjectReference Include="..\IdFortress.Domain\IdFortress.Domain.csproj" />
     <ProjectReference Include="..\IdFortress.Infrastructure\IdFortress.Infrastructure.csproj" />
   </ItemGroup>

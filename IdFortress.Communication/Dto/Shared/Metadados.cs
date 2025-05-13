@@ -1,4 +1,4 @@
-﻿namespace IdFortress.Application.Dto.Shared;
+﻿namespace IdFortress.Communication.Dto.Shared;
 
 public record Metadados
 {

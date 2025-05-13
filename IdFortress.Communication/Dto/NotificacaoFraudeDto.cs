@@ -1,13 +1,9 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
+﻿using IdFortress.Communication.Dto.Shared;
 
-namespace IdFortress.Domain.Entitites;
+namespace IdFortress.Communication.Dto;
 
-public class NotificacaoFraude
+public record NotificacaoFraudeDto
 {
-    [BsonRepresentation(BsonType.String)]
-    public ObjectId Id { get; set; }
-
     public Guid TransacaoId { get; set; }
     public string TipoBiometria { get; set; }
     public string TipoFraude { get; set; }
@@ -17,7 +13,4 @@ public class NotificacaoFraude
     public string[] CanalNotificacao { get; set; }
     public string NotificadoPor { get; set; }
     public Metadados Metadados { get; set; }
-
-    public DateTime DataRegistro { get; set; } = DateTime.UtcNow;
-
 }

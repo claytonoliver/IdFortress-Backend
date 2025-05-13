@@ -5,17 +5,14 @@ using IdFortress.Communication.Dto.Response;
 using IdFortress.Domain.Entitites;
 using IdFortress.Infrastructure.Context;
 using IdFortress.Infrastructure.Repositories;
-using IdFortress.Infrastructure.Repositories.Interface;
 using MongoDB.Driver;
 
-namespace IdFortress.Application.Services;
-
-public class BiometriaFacialService : MongoDbGenericRepository<Validacao>, IBiometriaFacialService
+public class DocumentosService : MongoDbGenericRepository<Validacao>, IDocumentosService
 {
     private readonly IMongoCollection<Validacao> _validacoes;
     private readonly INotificacaoFraudeService _notificacaoService;
 
-    public BiometriaFacialService(
+    public DocumentosService(
         IMongoDatabase database,
         MongoDbContext context,
         INotificacaoFraudeService notificacaoService)
@@ -25,17 +22,16 @@ public class BiometriaFacialService : MongoDbGenericRepository<Validacao>, IBiom
         _notificacaoService = notificacaoService;
     }
 
-    public async Task<RespostaValidacao> ValidarAsync(RequisicaoBiometriaFacialDto request)
+    public async Task<RespostaValidacao> ValidarAsync(RequisicaoDocumento request)
     {
-        // Validação básica simulada
-        var tipoFraude = DetectarFraude(request.ImagemBase64);
+        var tipoFraude = DetectarFraude(request.ImagemDocumentoBase64, request.ImagemSelfieBase64);
         var fraudeDetectada = tipoFraude != null;
 
         var entidade = new Validacao
         {
             TransacaoId = request.TransacaoId,
-            TipoValidacao = "facial",
-            ImagemBase64 = request.ImagemBase64,
+            TipoValidacao = "documentoscopia",
+            ImagemBase64 = request.ImagemDocumentoBase64, // opcional: armazenar selfie separadamente
             DataCaptura = request.DataCaptura,
             Dispositivo = new Dispositivo
             {
@@ -61,25 +57,14 @@ public class BiometriaFacialService : MongoDbGenericRepository<Validacao>, IBiom
             await _notificacaoService.NotificarFraudeAsync(new NotificacaoFraudeDto
             {
                 TransacaoId = request.TransacaoId,
-                TipoBiometria = "facial",
+                TipoBiometria = "documentoscopia",
                 TipoFraude = tipoFraude,
                 DataCaptura = request.DataCaptura,
-                Dispositivo = new IdFortress.Communication.Dto.Shared.Dispositivo
-                {
-                    Fabricante = request.Dispositivo.Fabricante,
-                    Modelo = request.Dispositivo.Modelo,
-                    SistemaOperacional = request.Dispositivo.SistemaOperacional
-                },
+                Dispositivo = request.Dispositivo,
                 CanalNotificacao = new[] { "sms", "email" },
                 NotificadoPor = "sistema-de-monitoramento",
-                Metadados = new IdFortress.Communication.Dto.Shared.Metadados
-                {
-                    Latitude = request.Metadados.Latitude,
-                    Longitude = request.Metadados.Longitude,
-                    IpOrigem = request.Metadados.IpOrigem
-                }
+                Metadados = request.Metadados
             });
-
         }
 
         return new RespostaValidacao
@@ -87,16 +72,16 @@ public class BiometriaFacialService : MongoDbGenericRepository<Validacao>, IBiom
             Sucesso = !fraudeDetectada,
             FraudeDetectada = fraudeDetectada,
             TipoFraude = tipoFraude,
-            Mensagem = fraudeDetectada ? "Fraude detectada." : "Validação facial realizada com sucesso."
+            Mensagem = fraudeDetectada ? "Fraude detectada na análise de documento." : "Documento validado com sucesso."
         };
     }
 
-    private string? DetectarFraude(string imagemBase64)
+    private string? DetectarFraude(string imagemDoc, string imagemSelfie)
     {
-        // Simulação de fraude com base em alguma regra simples (placeholder)
-        if (imagemBase64.Contains("fake")) return "deepfake";
-        if (imagemBase64.Contains("mascara")) return "mascara";
-        if (imagemBase64.Contains("fotodefoto")) return "foto de foto";
+        if (imagemDoc.Contains("editado") || imagemSelfie.Contains("falso"))
+            return "documento falso";
+        if (imagemDoc.Contains("baixaqualidade"))
+            return "qualidade insuficiente";
         return null;
     }
 }

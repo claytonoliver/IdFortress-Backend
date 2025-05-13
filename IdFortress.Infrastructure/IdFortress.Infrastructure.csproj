@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IdFortress.Communication\IdFortress.Communication.csproj" />
     <ProjectReference Include="..\IdFortress.Domain\IdFortress.Domain.csproj" />
   </ItemGroup>
 

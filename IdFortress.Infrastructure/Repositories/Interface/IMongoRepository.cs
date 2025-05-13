@@ -1,10 +1,13 @@
-﻿namespace IdFortress.Infrastructure.Repositories.Interface;
+﻿using MongoDB.Bson;
 
-public interface IMongoRepository<T>
+namespace IdFortress.Infrastructure.Repositories.Interface;
+
+public interface IMongoRepository<T> where T : class
 {
-    Task<T> SalvarAsync();
-    Task<T> UpdateByIdAsync(string id);
-    Task<T> DeleteByIdAsync(string id);
-    Task<T> GetAllAsync();
-    Task<T> GetByIdAsync(string id);
+    Task AddAsync(T entity);
+    Task DeleteAsync(ObjectId id);
+    Task<IEnumerable<T>> GetAllAsync();
+    Task<T> GetByIdAsync(ObjectId id);
+    Task UpdateAsync(ObjectId id, T entity);
 }
+                               

@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IdFortress.Application\IdFortress.Application.csproj" />
+    <ProjectReference Include="..\IdFortress.Communication\IdFortress.Communication.csproj" />
   </ItemGroup>
 
 </Project>
