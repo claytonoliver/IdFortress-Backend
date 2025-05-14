@@ -33,7 +33,10 @@ Este projeto representa uma aplicação **backend antifraude** desenvolvida em *
 
 Para executar o banco de dados localmente, você pode utilizar o seguinte comando Docker:
 
+docker run -d -p 27017:27017 --name mongo-test mongo
+
 ```bash
+
 "MongoSettings": {
   "ConnectionString": "mongodb://localhost:27017",
   "DataBaseName": "IdFortressDb"
